@@ -1,0 +1,59 @@
+/*
+Material Design Color Palete:
+.dark-primary-color  { background: #0097A7; }
+.default-primary-color { background: #00BCD4; }
+.light-primary-color   { background: #B2EBF2; }
+.text-primary-color    { color: #FFFFFF; }
+.accent-color          { background: #607D8B; }
+.primary-text-color    { color: #212121; }
+.secondary-text-color  { color: #757575; }
+.divider-color         { border-color: #BDBDBD; }
+*/
+
+body {
+	background-color: #FFFFFF;
+	color: #212121;
+	height: 100%;
+	width: 100%;
+}
+
+#header {
+	font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: bold;
+    font-style: italic;
+    align-items: center;
+	background-color: #0097A7;
+	display: flex;
+	height: 80px;
+	justify-content: space-between;
+	width: 100%;
+}
+
+#header-title {
+    font-size: 3em;
+    color: #FFFFFF;
+    margin: 0 0 0 450px;
+}
+
+#game-directions{
+    font-size: 1em;
+    float: left;
+    padding: 150px 50px;
+    background-color: #FFFFFF;
+}
+
+#game-board {
+    float: right;
+    padding: 60px 150px;
+    background-color: #FFFFFF;
+}
+
+
+#footer {
+	align-items: center;
+	background-color: #0097A7;
+	display: flex;
+	height: 50px;
+	justify-content: space-between;
+	width: 100%;
+}

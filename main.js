@@ -1,134 +1,145 @@
 var canvas = document.getElementById ("canvas");
 var ctx = canvas.getContext("2d");
-var bluebubble = './images/bluebubble.png';
-var yellowbubble = './images/yellowbubble.png'
-var redbubble = './images/redbubble.png'
+
+var colors = ["#327DE5", "#F5F61B", "#F63C1B", "#3EC964", "#7844C5"];
 var interval;
-var bubbleImages = [bluebubble, yellowbubble, redbubble];
-var bubbleColors = [bluebubble, yellowbubble, redbubble];
-var bubbles = []
+var frames = 0;
+var bubbles = [];
+var superBubble = [];
 
-//ctx.fillRect(0,0,40,40);
-//var myImages =  [image1,image2,image3]
-//var image = new Image();
-// image.src = './images/bluebubble.png';
+//instances
 
-// image.onload = function(){
-//     ctx.drawImage(image, 0,0,40,40);
-// }
+//Colored Canvas
+//ctx.fillStyle = "#B2EBF2";
+//ctx.fillRect(0, 0, 450, 540);
 
 
+//classes 
 class Bubble {
-    constructor(x, y, img, color) {
+    constructor(color="red", x=20, y=20, sb) {
         this.color = color
         this.x = x;
         this.y = y;
-        this.width = 40;
-        this.height = 40;
-        this.image = new Image();
-        //this.image.src = "./images/bluebubble.png";
-        this.image.src = img 
-        this.image.onload = ()=>{
-           this.draw()            
-        }
+        this.radius = 20;
+        this.draw();
+        this.direction = "left";
+        this.sb = sb || false;
+        this.moving = false;
+    }
+
+    collision(item){
+        /* first we get the x and y distance between the two circles. */
+        let distance_x = item.x      - this.x;
+        let distance_y = item.y      - this.y;
+        /* Then we get the sum of their radii. */
+        let radii_sum  = item.radius + this.radius;
+        /* Then we test to see if the square of their distance is greater than the
+        square of their radii. If it is, then there is no collision. If it isn't,
+        then we have a collision. */
+        if (distance_x * distance_x + distance_y * distance_y <= radii_sum * radii_sum) return true;
+        return false;
     }
 
     draw () {        
-        ctx.drawImage (this.image, this.x, this.y, this.width, this.height) 
-        //else ctx.fillRect( this.x, this.y, this.width, this.height)
-        this.y +=40
+        ctx.beginPath()
+        ctx.fillStyle = this.color
+        ctx.arc(this.x,this.y, this.radius, 0, 2*Math.PI)
+        ctx.fill()
+        ctx.closePath()
+        if(!this.sb) this.y+= .2
+        if(this.sb){
+            this.direction === "right" ? this.x += 5 : this.x -= 5;
+            if(this.x  < this.radius && this.direction === "left"){
+                this.direction = "right"
+            }else if(this.x > canvas.width-this.radius && this.direction === "right"){
+                this.direction = "left"
+            }
+
+            
+            // if(this.x < canvas.width - this.radius){
+            //     this.direction = "left";
+            // }
+        }
+        if(this.moving) this.y -= 5;
+       
+        
+        //console.log("??")
     }
+}
+
+// Bliss was here
+
+// main function
+function start(){
+    interval = setInterval(update, 1000/60)
 }
 
 function update(){
-    interval = setInterval(function(){
-        generateBubbles()
-        drawBubbles()
-    }, 2000)
+    // borrar
+    ctx.clearRect(0,0,canvas.width, canvas.height)
+    //dibujar
+    drawBubbles()
+    // crear
+    generateBubbles()
+    generateSuperBubble();
+    frames ++
+    //buble1.draw()
+    
 }
 
+function gameOver(){
+    clearInterval(interval);
+}
 
-
+// aux functions
 function generateBubbles(){
-    
-    for(var i=0;i<=7;i++){
-        var randomNumber = Math.floor(Math.random()*bubbleImages.length)
-        var img = bubbleImages[randomNumber]
-        var color = bubbleColors[randomNumber]
-        var x = 40*i+60
-        var y = -40        
-        var bubble = new Bubble(x, y, img, color)
-        bubbles.push(bubble)
+    if(frames%200==0){
+        for(var i=0;i<11;i++){
+            let index = Math.floor(Math.random()*colors.length)
+            let b = new Bubble(colors[index], (40*i)+25)
+            bubbles.push(b)        
+        }
     }
 }
+
+function generateSuperBubble(){
+    if(superBubble.length > 0) return;
+    let color = colors[Math.floor(Math.random()*colors.length)];
+    let s = new Bubble(color, 225, 515, true);
+    superBubble.push(s);
+}
+
 
 function drawBubbles(){
-    bubbles.forEach(function(b,idx){
-        
-        if(b.y>=400){
-            console.log('ya se pasó')
-            bubbles.splice(idx,1)
-        }
+    bubbles.forEach((b,i)=>{
         b.draw()
+        if (b.y > 490 - b.radius) gameOver()
+        if(b.collision(superBubble[0])) {
+            superBubble[0].moving = false;
+            if(superBubble[0].color === b.color){
+                bubbles.splice(i,1)
+                superBubble.splice(0,1)
+                generateSuperBubble();
+            }else{
+                let bu = superBubble.splice(0,1)[0]
+                bubbles.push(bu)
+                generateSuperBubble();
+            }
+           
+        }
     })
+    superBubble.forEach(sb => sb.draw());
 }
 
-
-update()
-
- 
-/*class Arrangebubbles{
-    constructor(x, y, type, shift){
-        this.x = x;
-        this.y = y;
-        this.width = 20
-        this.height = 20
-        this.image = new Image()
-        this.image.src="./images/bluebubble.png"
+//listeners
+addEventListener("keydown", (e)=>{
+    if(e.keyCode === 32){
+        superBubble[0].moving = true;
+        superBubble[0].sb = false
     }
-}
+})
 
-/*class Clearbubbles{
-    constructor (){
-        this.x = x;
-        this.y = y;
-        this.width = 20
-        this.height = 20
-    }
-}*/
+// start everything
+start();
 
 
-function setBubbles (){
-    for (var i=0; i<16; i++) {
-        bubbles[i]=[]
-        for (var j=0; j<10; j++){
-            bubbles[i][j] = new Bubble (i,j,0,0)
-            
-        }
-
-        
-    }
-    console.log("setBubbles",bubbles)
-
-}
-
-function renderTiles() {
-    // Top to bottom
-    for (var j=0; j<10; j++) {
-        for (var i=0; i<15; i++) {
-            // Get the tile
-            //var tile = tilearray[i][j];
- 
-            // Calculate the tile coordinates
-            //var coord = getTileCoordinate(i, j);
- 
-            // Draw the tile
-            newB.draw(20,30,0)
-            ;
-        }
-    }
-}
-
-
-// setBubbles();
-// renderTiles();
