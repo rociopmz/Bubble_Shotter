@@ -48,6 +48,11 @@ body {
     background-color: #FFFFFF;
 }
 
+#canvas {
+	border: #B2EBF2 6px solid;
+
+}
+
 
 #footer {
 	align-items: center;

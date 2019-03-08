@@ -1,4 +1,5 @@
 var canvas = document.getElementById ("canvas");
+var boxScore = document.getElementById ("getScore");
 var ctx = canvas.getContext("2d");
 
 var colors = ["#327DE5", "#F5F61B", "#F63C1B", "#3EC964", "#7844C5"];
@@ -6,6 +7,7 @@ var interval;
 var frames = 0;
 var bubbles = [];
 var superBubble = [];
+var score = 0;
 
 //instances
 
@@ -28,10 +30,10 @@ class Bubble {
     }
 
     collision(item){
-        /* first we get the x and y distance between the two circles. */
+        //first we get the x and y distance between the two circles.
         let distance_x = item.x      - this.x;
         let distance_y = item.y      - this.y;
-        /* Then we get the sum of their radii. */
+        //Then we get the sum of their radii
         let radii_sum  = item.radius + this.radius;
         /* Then we test to see if the square of their distance is greater than the
         square of their radii. If it is, then there is no collision. If it isn't,
@@ -51,44 +53,53 @@ class Bubble {
             this.direction === "right" ? this.x += 5 : this.x -= 5;
             if(this.x  < this.radius && this.direction === "left"){
                 this.direction = "right"
-            }else if(this.x > canvas.width-this.radius && this.direction === "right"){
+            }else if(this.x > canvas.width - this.radius && this.direction === "right"){
                 this.direction = "left"
             }
-
-            
-            // if(this.x < canvas.width - this.radius){
-            //     this.direction = "left";
-            // }
         }
-        if(this.moving) this.y -= 5;
-       
-        
+        if(this.moving) this.y -= 5;      
         //console.log("??")
     }
 }
 
+
+
 // Bliss was here
 
-// main function
+// main functions
 function start(){
     interval = setInterval(update, 1000/60)
 }
 
 function update(){
-    // borrar
+    // erase
     ctx.clearRect(0,0,canvas.width, canvas.height)
-    //dibujar
+    //draw
     drawBubbles()
-    // crear
+    // create
     generateBubbles()
     generateSuperBubble();
     frames ++
+    ctx.font = "30px Avenir"
+    //ctx.fillText(score, 10, 30);
     //buble1.draw()
-    
+    console.log ("score", score)
+    getScore()
 }
 
 function gameOver(){
     clearInterval(interval);
+    interval=undefined
+}
+
+
+function restart(){
+    clearInterval(interval)
+    score = 0;
+    frames = 0;
+    interval = undefined;
+    bubbles = [];
+    start();
 }
 
 // aux functions
@@ -120,6 +131,7 @@ function drawBubbles(){
                 bubbles.splice(i,1)
                 superBubble.splice(0,1)
                 generateSuperBubble();
+                score ++
             }else{
                 let bu = superBubble.splice(0,1)[0]
                 bubbles.push(bu)
@@ -137,9 +149,19 @@ addEventListener("keydown", (e)=>{
         superBubble[0].moving = true;
         superBubble[0].sb = false
     }
+
+    if(e.keyCode === 27){
+        restart();
+    }
 })
 
+
+//socre hmtl
+function getScore(){
+    boxScore.innerHTML = score
+}
 // start everything
 start();
+
 
 
