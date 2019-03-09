@@ -12,13 +12,14 @@ Material Design Color Palete:
 
 body {
 	background-color: #FFFFFF;
-	color: #212121;
+	color: #607D8B;
 	height: 100%;
 	width: 100%;
+	background-image: url("./images/pusheengray.png");
 }
 
 #header {
-	font-family: Georgia, 'Times New Roman', Times, serif;
+	font-family: Georgia;
     font-weight: bold;
     font-style: italic;
     align-items: center;
@@ -36,23 +37,30 @@ body {
 }
 
 #game-directions{
-    font-size: 1em;
+	font-size: 2em;
     float: left;
-    padding: 150px 50px;
-    background-color: #FFFFFF;
+	padding: 150px 50px;
+	color:  #607D8B;
+	text-align: center;
+	   
+}
+
+
+.uk-card {
+   color: #607D8B;
 }
 
 #game-board {
     float: right;
     padding: 60px 150px;
-    background-color: #FFFFFF;
 }
 
 #canvas {
-	border: #B2EBF2 6px solid;
+	border-width: 2px;  
+    border-bottom-style: double;
+	border-bottom-color: #00BCD4;
 
 }
-
 
 #footer {
 	align-items: center;

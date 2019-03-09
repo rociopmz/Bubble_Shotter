@@ -9,13 +9,26 @@ var bubbles = [];
 var superBubble = [];
 var score = 0;
 
+var audio = new Audio();
+audio.src = "./sounds/bensound-jazzyfrenchy.mp3"
+audio.loop = true;
+audio.volume = 0.4;
+
+var shoot = new Audio();
+shoot.src = "./sounds/dustyroom_cartoon_bubble_pop.mp3"
+shoot.loop = true;
+
+var match = new Audio();
+match.src = "./sounds/fork_media_cartoon_bubbles_classic_vintage.mp3"
+match.loop = true;
+
+var sad = new Audio();
+sad.src = "./sounds/cartoon_fail_trumpet_001.mp3"
+sad.loop = true;
+
 //instances
 
-//Colored Canvas
-//ctx.fillStyle = "#B2EBF2";
-//ctx.fillRect(0, 0, 450, 540);
-
-
+	
 //classes 
 class Bubble {
     constructor(color="red", x=20, y=20, sb) {
@@ -62,12 +75,11 @@ class Bubble {
     }
 }
 
-
-
 // Bliss was here
 
 // main functions
 function start(){
+    //startedGame = false;
     interval = setInterval(update, 1000/60)
 }
 
@@ -83,14 +95,22 @@ function update(){
     ctx.font = "30px Avenir"
     //ctx.fillText(score, 10, 30);
     //buble1.draw()
-    console.log ("score", score)
+    //console.log ("score", score)
     getScore()
+    audio.play();
 }
 
 function gameOver(){
     clearInterval(interval);
     interval=undefined
-}
+    
+    sad.play();
+    sad.loop = false;
+
+    audio.pause();
+    audio.currentTime = 0;
+    
+}  
 
 
 function restart(){
@@ -108,7 +128,8 @@ function generateBubbles(){
         for(var i=0;i<11;i++){
             let index = Math.floor(Math.random()*colors.length)
             let b = new Bubble(colors[index], (40*i)+25)
-            bubbles.push(b)        
+            bubbles.push(b)  
+            match.loop = false;      
         }
     }
 }
@@ -124,14 +145,15 @@ function generateSuperBubble(){
 function drawBubbles(){
     bubbles.forEach((b,i)=>{
         b.draw()
-        if (b.y > 490 - b.radius) gameOver()
+        if (b.y > 490 - b.radius) gameOver()    
         if(b.collision(superBubble[0])) {
             superBubble[0].moving = false;
             if(superBubble[0].color === b.color){
+                match.play();
                 bubbles.splice(i,1)
                 superBubble.splice(0,1)
                 generateSuperBubble();
-                score ++
+                score +=100
             }else{
                 let bu = superBubble.splice(0,1)[0]
                 bubbles.push(bu)
@@ -146,6 +168,8 @@ function drawBubbles(){
 //listeners
 addEventListener("keydown", (e)=>{
     if(e.keyCode === 32){
+        shoot.play();
+        shoot.loop = false;
         superBubble[0].moving = true;
         superBubble[0].sb = false
     }
@@ -154,7 +178,6 @@ addEventListener("keydown", (e)=>{
         restart();
     }
 })
-
 
 //socre hmtl
 function getScore(){
