@@ -37,29 +37,29 @@ body {
 }
 
 #game-directions{
-	font-size: 2em;
+
     float: left;
-	padding: 60px 50px;
+	padding: 60px 30px;
 	color:  #607D8B;
 	text-align: center;
 	   
 }
 
-
 .uk-card {
    color: #607D8B;
+   
 }
 
 #game-board {
+	position: relative;
     float: right;
-    padding: 60px 100px;
+    padding: 50px 100px ;
 }
 
 #canvas {
 	border-width: 2px;  
     border-bottom-style: double;
 	border-bottom-color: #00BCD4;
-
 }
 
 #footer {
